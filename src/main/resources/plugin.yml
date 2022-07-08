@@ -1,0 +1,9 @@
+name: CustomMaps
+version: ${project.version}
+main: net.lukesmp.custommaps.Custommaps
+api-version: 1.17
+authors: [ SmexyLuke ]
+description: A plugin that allows images from the internet to be rendered on maps
+commands:
+  map:
+    usage: /map <width> <height> <link>
