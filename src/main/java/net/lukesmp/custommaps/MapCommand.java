@@ -25,6 +25,10 @@ import java.util.UUID;
 
 public class MapCommand implements CommandExecutor {
 
+    String prefix = Custommaps.plugin.getConfig().getString("prefix");
+//    Alternate way
+//    Custommaps.getPlugin(Custommaps.class).getConfig().getString("prefix");
+
     public boolean isInt(String s) {
         try {
             Integer.parseInt(s);
@@ -41,9 +45,11 @@ public class MapCommand implements CommandExecutor {
             if (args.length>2) {
                 if (isInt(args[0])&&(isInt(args[1]))) {
                     // The arguments are int
+                    Integer maxX =Custommaps.plugin.getConfig().getInt("maxX");
+                    Integer maxY = Custommaps.plugin.getConfig().getInt("maxY");
                     int width = Integer.parseInt(args[0]);
                     int height = Integer.parseInt(args[1]);
-                    if (width<9&&height<9) {
+                    if (width<=maxX&&height<=maxY) {
                         try {
                             URL url = new URL(args[2]);
                             BufferedImage image = ImageIO.read(url);
@@ -82,7 +88,7 @@ public class MapCommand implements CommandExecutor {
                                     for (Map.Entry<Integer, ItemStack> entry : failedItems.entrySet()) {
                                         player.getWorld().dropItem(player.getLocation(), entry.getValue());
                                     }
-                                    player.sendMessage(ChatColor.DARK_AQUA + "Luke" + ChatColor.DARK_PURPLE + "SMP" + ChatColor.GRAY + "" + ChatColor.BOLD + ChatColor.MAGIC + " | " + ChatColor.GREEN + "Image Created!");
+                                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.GREEN + "Image Created!");
                                     ImageManager manager = ImageManager.getInstance();
                                     manager.saveImage(view.getId(), str);
                                 }
@@ -90,20 +96,19 @@ public class MapCommand implements CommandExecutor {
                             return true;
                         } catch (Exception e) {
                             e.printStackTrace();
-                            player.sendMessage(ChatColor.DARK_AQUA + "Luke" + ChatColor.DARK_PURPLE + "SMP" + ChatColor.GRAY + "" + ChatColor.BOLD + ChatColor.MAGIC + " | " + ChatColor.RED + "Image could not be loaded. This can happen because the link is not direct. The easiest way to ensure the link is a direct link, is to send the image over discord then use \"copy link\"");
+                            player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.RED + "Image could not be loaded. This can happen because the link is not direct. The easiest way to ensure the link is a direct link, is to send the image over discord then use \"copy link\"");
                             return true;
                         }
                     }else{
-                        player.sendMessage(ChatColor.DARK_AQUA + "Luke" + ChatColor.DARK_PURPLE + "SMP" + ChatColor.GRAY + "" + ChatColor.BOLD + ChatColor.MAGIC + " | " + ChatColor.RED + "Dimensions are too large, please pick smaller numbers");
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.RED+"Dimensions are too large, please specify smaller numbers");
                         return true;
                     }
                 }
-                player.sendMessage(ChatColor.RED + "Usage: /map <width> <height> <link>");
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.RED + "Usage: /map <width> <height> <link>");
                 return true;
             } else {
                 //args are not integers
-                Custommaps.getPlugin(Custommaps.class).getConfig().getString("prefix");
-                player.sendMessage(ChatColor.RED + "Usage: /map <width> <height> <link>");
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.RED + "Usage: /map <width> <height> <link>");
                 return true;
             }
         }
