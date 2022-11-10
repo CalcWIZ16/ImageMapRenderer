@@ -1,12 +1,4 @@
-package net.lukesmp.custommaps;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
+package net.lukesmp.imagemaprenderer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,7 +7,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.map.MapView;
-import org.bukkit.map.MapView.Scale;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 
 public class ImageManager implements Listener {
     private static ImageManager instance = null;
@@ -28,7 +27,7 @@ public class ImageManager implements Listener {
     private Map<Integer, String> savedImages = new HashMap<Integer, String>();
 
     public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, Custommaps.getPlugin(Custommaps.class));
+        Bukkit.getServer().getPluginManager().registerEvents(this, ImageMapRenderer.getPlugin(ImageMapRenderer.class));
         loadImages();
     }
     @EventHandler
@@ -37,7 +36,7 @@ public class ImageManager implements Listener {
             MapView view = event.getMap();
             view.getRenderers().clear();
             view.addRenderer(new Render(getImage(view.getId())));
-            view.setScale(Scale.FARTHEST);
+            view.setScale(MapView.Scale.FARTHEST);
             view.setTrackingPosition(false);
         }
     }
@@ -64,7 +63,7 @@ public class ImageManager implements Listener {
         dataFile.saveConfig();
     }
     class CustomFile {
-        private final Custommaps plugin = Custommaps.getPlugin(Custommaps.class);
+        private final ImageMapRenderer plugin = ImageMapRenderer.getPlugin(ImageMapRenderer.class);
         private FileConfiguration dataConfig = null;
         private File dataConfigFile = null;
         private final String name;

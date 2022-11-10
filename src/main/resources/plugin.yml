@@ -1,9 +1,11 @@
-name: CustomMaps
-version: ${project.version}
-main: net.lukesmp.custommaps.Custommaps
-api-version: 1.17
+name: ImageMapRenderer
+version: '${project.version}'
+main: net.lukesmp.imagemaprenderer.ImageMapRenderer
+api-version: 1.19
 authors: [ SmexyLuke ]
-description: A plugin that allows images from the internet to be rendered on maps
+description: A SpigotMC plugin that can take images from the internet and render them on in-game maps
+website: https://www.lukesmp.net
 commands:
   map:
     usage: /map <width> <height> <link>
+    description: Renders an image on a map

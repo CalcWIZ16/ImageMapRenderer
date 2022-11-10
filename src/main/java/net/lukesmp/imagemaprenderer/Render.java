@@ -1,4 +1,4 @@
-package net.lukesmp.custommaps;
+package net.lukesmp.imagemaprenderer;
 
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;

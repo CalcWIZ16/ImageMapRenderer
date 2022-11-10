@@ -1,14 +1,14 @@
-package net.lukesmp.custommaps;
+package net.lukesmp.imagemaprenderer;
 
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class Custommaps extends JavaPlugin {
+public final class ImageMapRenderer extends JavaPlugin {
 
     public static JavaPlugin plugin = null;
 
     @Override
     public void onEnable() {
+        // Plugin startup logic
         plugin = this;
         ImageManager manager=ImageManager.getInstance();
         manager.init();
@@ -18,5 +18,6 @@ public final class Custommaps extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        // Plugin shutdown logic
     }
 }

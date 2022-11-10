@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.lukesmp</groupId>
-    <artifactId>custommaps</artifactId>
-    <version>4.4.1</version>
+    <artifactId>ImageMapRenderer</artifactId>
+    <version>4.4.2</version>
     <packaging>jar</packaging>
 
-    <name>CustomMaps</name>
+    <name>ImageMapRenderer</name>
 
-    <description>A plugin that can take images from the internet and render them on in-game maps</description>
+    <description>A SpigotMC plugin that can take images from the internet and render them on in-game maps</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -69,7 +69,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.19-R0.1-SNAPSHOT</version>
+            <version>1.19.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

@@ -1,4 +1,4 @@
-package net.lukesmp.custommaps;
+package net.lukesmp.imagemaprenderer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,11 +21,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class MapCommand implements CommandExecutor {
-
-    String prefix = Custommaps.plugin.getConfig().getString("prefix");
+    String prefix = ImageMapRenderer.plugin.getConfig().getString("prefix");
 //    Alternate way
 //    Custommaps.getPlugin(Custommaps.class).getConfig().getString("prefix");
 
@@ -45,8 +43,8 @@ public class MapCommand implements CommandExecutor {
             if (args.length>2) {
                 if (isInt(args[0])&&(isInt(args[1]))) {
                     // The arguments are int
-                    Integer maxX =Custommaps.plugin.getConfig().getInt("maxX");
-                    Integer maxY = Custommaps.plugin.getConfig().getInt("maxY");
+                    Integer maxX = ImageMapRenderer.plugin.getConfig().getInt("maxX");
+                    Integer maxY = ImageMapRenderer.plugin.getConfig().getInt("maxY");
                     int width = Integer.parseInt(args[0]);
                     int height = Integer.parseInt(args[1]);
                     if (width<=maxX&&height<=maxY) {
@@ -56,7 +54,7 @@ public class MapCommand implements CommandExecutor {
                             image = resize(image, 128 * width, 128 * height);
                             int lastUsedNumber = -1;
                             boolean foundNumber = false;
-                            Path folderPath = Custommaps.plugin.getDataFolder().toPath();
+                            Path folderPath = ImageMapRenderer.plugin.getDataFolder().toPath();
                             while (!foundNumber) {
                                 lastUsedNumber++;
                                 Path filePath = Paths.get(folderPath.toString(), String.valueOf(lastUsedNumber) + ".png");
