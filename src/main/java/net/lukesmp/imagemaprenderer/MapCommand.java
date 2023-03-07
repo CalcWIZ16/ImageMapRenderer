@@ -2,14 +2,22 @@ package net.lukesmp.imagemaprenderer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapView;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -20,12 +28,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MapCommand implements CommandExecutor {
     String prefix = ImageMapRenderer.plugin.getConfig().getString("prefix");
-//    Alternate way
-//    Custommaps.getPlugin(Custommaps.class).getConfig().getString("prefix");
 
     public boolean isInt(String s) {
         try {
@@ -39,11 +46,22 @@ public class MapCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Player player=(Player) sender;
-        if (sender instanceof Player) {
+        //invisible command
+//        if (label.equalsIgnoreCase("invisible")) {
+//            if (args.length==0) {
+//
+//            } else {
+//                player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.RED + "Usage: /invisible");
+//            }
+//            return true;
+//        }
+        //map command
+        if (label.equalsIgnoreCase("map")) {
             if (args.length>2) {
                 //get max dimensions
                 int maxX = ImageMapRenderer.plugin.getConfig().getInt("maxX");
                 int maxY = ImageMapRenderer.plugin.getConfig().getInt("maxY");
+                boolean giveFrames = ImageMapRenderer.plugin.getConfig().getBoolean("giveItemFrames");
                 //Y value given, calculate X value
                 if (args[0].equals("~")&&isInt(args[1])){
                     int height = Integer.parseInt(args[1]);
@@ -74,6 +92,13 @@ public class MapCommand implements CommandExecutor {
                                         lastUsedNumber++;
                                     }
                                 }
+                                if (giveFrames) {
+                                    int mapAmount = width * height;
+                                    HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.ITEM_FRAME, mapAmount));
+                                    for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
+                                        player.getWorld().dropItem(player.getLocation(), entry.getValue());
+                                    }
+                                }
                                 for (String str : links) {
                                     MapView view = Bukkit.createMap(player.getWorld());
                                     view.getRenderers().clear();
@@ -84,7 +109,7 @@ public class MapCommand implements CommandExecutor {
                                         MapMeta meta = (MapMeta) map.getItemMeta();
                                         meta.setMapView(view);
                                         map.setItemMeta(meta);
-                                        //Give items and drop if inventory is full
+                                        //Give maps and drop if inventory is full
                                         HashMap<Integer, ItemStack> failedItems = player.getInventory().addItem(map);
                                         for (Map.Entry<Integer, ItemStack> entry : failedItems.entrySet()) {
                                             player.getWorld().dropItem(player.getLocation(), entry.getValue());
@@ -138,6 +163,13 @@ public class MapCommand implements CommandExecutor {
                                         lastUsedNumber++;
                                     }
                                 }
+                                if (giveFrames) {
+                                    int mapAmount = width * height;
+                                    HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.ITEM_FRAME, mapAmount));
+                                    for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
+                                        player.getWorld().dropItem(player.getLocation(), entry.getValue());
+                                    }
+                                }
                                 for (String str : links) {
                                     MapView view = Bukkit.createMap(player.getWorld());
                                     view.getRenderers().clear();
@@ -148,7 +180,7 @@ public class MapCommand implements CommandExecutor {
                                         MapMeta meta = (MapMeta) map.getItemMeta();
                                         meta.setMapView(view);
                                         map.setItemMeta(meta);
-                                        //Give items and drop if inventory is full
+                                        //Give maps and drop if inventory is full
                                         HashMap<Integer, ItemStack> failedItems = player.getInventory().addItem(map);
                                         for (Map.Entry<Integer, ItemStack> entry : failedItems.entrySet()) {
                                             player.getWorld().dropItem(player.getLocation(), entry.getValue());
@@ -201,6 +233,13 @@ public class MapCommand implements CommandExecutor {
                                     lastUsedNumber++;
                                 }
                             }
+                            if (giveFrames) {
+                                int mapAmount = width * height;
+                                HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.ITEM_FRAME, mapAmount));
+                                for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
+                                    player.getWorld().dropItem(player.getLocation(), entry.getValue());
+                                }
+                            }
                             for (String str : links) {
                                 MapView view = Bukkit.createMap(player.getWorld());
                                 view.getRenderers().clear();
@@ -211,9 +250,9 @@ public class MapCommand implements CommandExecutor {
                                     MapMeta meta = (MapMeta) map.getItemMeta();
                                     meta.setMapView(view);
                                     map.setItemMeta(meta);
-                                    //Give items and drop if inventory is full
-                                    HashMap<Integer, ItemStack> failedItems = player.getInventory().addItem(map);
-                                    for (Map.Entry<Integer, ItemStack> entry : failedItems.entrySet()) {
+                                    //Give maps and drop if inventory is full
+                                    HashMap<Integer, ItemStack> failedMaps = player.getInventory().addItem(map);
+                                    for (Map.Entry<Integer, ItemStack> entry : failedMaps.entrySet()) {
                                         player.getWorld().dropItem(player.getLocation(), entry.getValue());
                                     }
                                     player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.GREEN + "Image Created!");
@@ -242,7 +281,7 @@ public class MapCommand implements CommandExecutor {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.RED + "Usage: /map <width> <height> <link>");
             return true;
         }
-        return false;
+        return true;
     }
 
     public static BufferedImage resize(BufferedImage img, int newW, int newH) {

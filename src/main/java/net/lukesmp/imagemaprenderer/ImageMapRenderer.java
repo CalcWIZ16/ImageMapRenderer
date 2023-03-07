@@ -1,5 +1,6 @@
 package net.lukesmp.imagemaprenderer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class ImageMapRenderer extends JavaPlugin {
@@ -13,6 +14,7 @@ public final class ImageMapRenderer extends JavaPlugin {
         ImageManager manager=ImageManager.getInstance();
         manager.init();
         this.getCommand("map").setExecutor(new MapCommand());
+//        this.getCommand("invisible").setExecutor(new MapCommand());
         this.saveDefaultConfig();
     }
 

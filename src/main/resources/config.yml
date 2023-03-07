@@ -8,3 +8,6 @@ maxX: 12
 #Maximum number to maps which an image can be split into vertically
 #Default 12
 maxY: 12
+
+#A toggle to give item frames to the player when they receive maps
+giveItemFrames: false
