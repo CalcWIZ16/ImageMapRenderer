@@ -187,11 +187,11 @@ public class MapCommand implements CommandExecutor {
                                             for (Map.Entry<Integer, ItemStack> entry : failedItems.entrySet()) {
                                                 player.getWorld().dropItem(player.getLocation(), entry.getValue());
                                             }
-                                            player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.GREEN + "Image Created!");
                                             ImageManager manager = ImageManager.getInstance();
                                             manager.saveImage(view.getId(), str);
                                         }
                                     }
+                                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.GREEN + "Map Created!");
                                 } else {
                                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "After calculating the optimal height we found the image is too tall. Max height is " + maxY + " maps");
                                 }
@@ -257,11 +257,11 @@ public class MapCommand implements CommandExecutor {
                                         for (Map.Entry<Integer, ItemStack> entry : failedMaps.entrySet()) {
                                             player.getWorld().dropItem(player.getLocation(), entry.getValue());
                                         }
-                                        player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.GREEN + "Image Created!");
                                         ImageManager manager = ImageManager.getInstance();
                                         manager.saveImage(view.getId(), str);
                                     }
                                 }
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.GREEN + "Map Created!");
                                 return true;
                             } catch (Exception e) {
                                 e.printStackTrace();
