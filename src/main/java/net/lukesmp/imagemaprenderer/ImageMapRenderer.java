@@ -13,7 +13,11 @@ public final class ImageMapRenderer extends JavaPlugin {
         plugin = this;
         ImageManager manager=ImageManager.getInstance();
         manager.init();
-        this.getCommand("map").setExecutor(new MapCommand());
+        if (plugin.getConfig().getString("command") == null) {
+            this.getCommand("command").setExecutor(new MapCommand());
+        }else {
+            this.getCommand(plugin.getConfig().getString("command")).setExecutor(new MapCommand());
+        }
 //        this.getCommand("invisible").setExecutor(new MapCommand());
         this.saveDefaultConfig();
     }
