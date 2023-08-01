@@ -49,9 +49,6 @@ public class MapCommand implements CommandExecutor {
             Player player=(Player) sender;
             //invisible command
 //            if (label.equalsIgnoreCase("invisible")) {
-//                if (!player.hasPermission("imagemaps.invisibleCommand")) {
-//                    return true;
-//                }
 //                if (args.length==0) {
 //
 //                } else {

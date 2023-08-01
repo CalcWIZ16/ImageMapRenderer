@@ -9,6 +9,10 @@ commands:
   map:
     usage: /map <width> <height> <link>
     description: Renders an image on a map
-    permission: imagemaps.mapCommand
+    permission: imagemaprenderer.map
 #  invisible:
 #    description: Makes a map invisible
+permissions:
+  imagemaprenderer.map:
+    description: allows player to run the /map command
+    default: true
