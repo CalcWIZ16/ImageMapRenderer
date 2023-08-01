@@ -9,5 +9,6 @@ commands:
   map:
     usage: /map <width> <height> <link>
     description: Renders an image on a map
+    permission: imagemaps.mapCommand
 #  invisible:
 #    description: Makes a map invisible
