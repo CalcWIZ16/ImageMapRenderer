@@ -12,6 +12,6 @@ maxX: 12
 #Default 12
 maxY: 12
 
-#A toggle to give item frames to the player when they receive maps
-giveItemFrames: false
-
+#A toggle to allow the option to receive (glow) item frames upon map creation
+allowItemFrames: false
+allowGlowItemFrames: false
