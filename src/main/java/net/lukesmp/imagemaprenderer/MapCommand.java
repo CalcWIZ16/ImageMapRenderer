@@ -57,7 +57,7 @@ public class MapCommand implements CommandExecutor {
 //                return true;
 //            }
             //map command
-            if (label.equalsIgnoreCase(ImageMapRenderer.plugin.getConfig().getString("command"))) {
+            if (label.equalsIgnoreCase("map")) {
                 if (args.length>2) {
                     //get max dimensions
                     int maxX = ImageMapRenderer.plugin.getConfig().getInt("maxX");

@@ -1,3 +1,6 @@
+#Do not change version number
+configVersion: 2
+
 #Changes the command used by the player to render maps
 #Default: "map"
 mapCommand: "map"
@@ -15,3 +18,4 @@ maxY: 12
 
 #A toggle to give item frames to the player when they receive maps
 giveItemFrames: false
+
