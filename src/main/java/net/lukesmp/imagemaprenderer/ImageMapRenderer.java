@@ -23,7 +23,7 @@ public final class ImageMapRenderer extends JavaPlugin {
         manager.init();
         ConfigUpdate();
         this.getCommand("map").setExecutor(new MapCommand());
-        this.getCommand("invisible").setExecutor(new MapCommand());
+//        this.getCommand("invisible").setExecutor(new MapCommand());
     }
 
     @Override

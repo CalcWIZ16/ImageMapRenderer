@@ -10,11 +10,14 @@ commands:
     usage: /map <width> <height> <link>
     description: Renders an image on a map
     permission: imagemaprenderer.map
-  invisible:
-    usage: /invisible
-    description: Makes a map invisible
-    permission: imagemaprenderer.invisible
+#  invisible:
+#    usage: /invisible
+#    description: Makes a map invisible
+#    permission: imagemaprenderer.invisible
 permissions:
   imagemaprenderer.map:
-    description: allows player to run the /map command
+    description: allows players to run the /map command
     default: true
+#  imagemaprenderer.invisible:
+#    description: allows players to run the /invisible command
+#    default: true

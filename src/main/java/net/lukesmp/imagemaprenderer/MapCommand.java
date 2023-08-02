@@ -2,33 +2,25 @@ package net.lukesmp.imagemaprenderer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapView;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MapCommand implements CommandExecutor {
@@ -70,56 +62,11 @@ public class MapCommand implements CommandExecutor {
                             try {
                                 URL url = new URL(args[2]);
                                 BufferedImage image = ImageIO.read(url);
-                                float pixelsPerMapEdge = image.getHeight()/height;
+                                float pixelsPerMapEdge = (float) image.getHeight() /height;
                                 int width = Math.round(image.getWidth()/pixelsPerMapEdge);
                                 if (width<=maxX) {
-                                    image = resize(image, 128 * width, 128 * height);
-                                    int lastUsedNumber = -1;
-                                    boolean foundNumber = false;
-                                    Path folderPath = ImageMapRenderer.plugin.getDataFolder().toPath();
-                                    while (!foundNumber) {
-                                        lastUsedNumber++;
-                                        Path filePath = Paths.get(folderPath.toString(), String.valueOf(lastUsedNumber) + ".png");
-                                        if (!filePath.toFile().exists()) {
-                                            foundNumber = true;
-                                        }
-                                    }
-                                    ArrayList<String> links = new ArrayList<String>();
-                                    for (int x = 0; x < image.getWidth() / 128; x++) {
-                                        for (int y = 0; y < image.getHeight() / 128; y++) {
-                                            File file = Paths.get(folderPath.toString(), String.valueOf(lastUsedNumber) + ".png").toFile();
-                                            links.add(file.toPath().toUri().toString());
-                                            ImageIO.write(image.getSubimage(x * 128, y * 128, 128, 128), "png", file);
-                                            lastUsedNumber++;
-                                        }
-                                    }
-                                    if (giveFrames) {
-                                        int mapAmount = width * height;
-                                        HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.ITEM_FRAME, mapAmount));
-                                        for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
-                                            player.getWorld().dropItem(player.getLocation(), entry.getValue());
-                                        }
-                                    }
-                                    for (String str : links) {
-                                        MapView view = Bukkit.createMap(player.getWorld());
-                                        view.getRenderers().clear();
-                                        Render renderer = new Render();
-                                        if (renderer.load(str)) {
-                                            view.addRenderer(renderer);
-                                            ItemStack map = new ItemStack(Material.FILLED_MAP);
-                                            MapMeta meta = (MapMeta) map.getItemMeta();
-                                            meta.setMapView(view);
-                                            map.setItemMeta(meta);
-                                            //Give maps and drop if inventory is full
-                                            HashMap<Integer, ItemStack> failedItems = player.getInventory().addItem(map);
-                                            for (Map.Entry<Integer, ItemStack> entry : failedItems.entrySet()) {
-                                                player.getWorld().dropItem(player.getLocation(), entry.getValue());
-                                            }
-                                            ImageManager manager = ImageManager.getInstance();
-                                            manager.saveImage(view.getId(), str);
-                                        }
-                                    }
-                                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.GREEN + "Map Created!");
+                                    distributeMaps(player, args, height, width, image);
+                                    return true;
                                 } else {
                                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "After calculating the optimal width we found the image is too wide. Max width is " + maxX + " maps");
                                 }
@@ -141,57 +88,11 @@ public class MapCommand implements CommandExecutor {
                             try {
                                 URL url = new URL(args[2]);
                                 BufferedImage image = ImageIO.read(url);
-                                float pixelsPerMapEdge = image.getWidth()/width;
+                                float pixelsPerMapEdge = (float) image.getWidth() /width;
                                 int height = Math.round(image.getHeight()/pixelsPerMapEdge);
                                 if (height<=maxY) {
-                                    image = resize(image, 128 * width, 128 * height);
-                                    int lastUsedNumber = -1;
-                                    boolean foundNumber = false;
-                                    Path folderPath = ImageMapRenderer.plugin.getDataFolder().toPath();
-                                    while (!foundNumber) {
-                                        lastUsedNumber++;
-                                        Path filePath = Paths.get(folderPath.toString(), String.valueOf(lastUsedNumber) + ".png");
-                                        if (!filePath.toFile().exists()) {
-                                            foundNumber = true;
-                                        }
-                                    }
-                                    ArrayList<String> links = new ArrayList<String>();
-                                    for (int x = 0; x < image.getWidth() / 128; x++) {
-                                        for (int y = 0; y < image.getHeight() / 128; y++) {
-                                            File file = Paths.get(folderPath.toString(), String.valueOf(lastUsedNumber) + ".png").toFile();
-                                            links.add(file.toPath().toUri().toString());
-                                            ImageIO.write(image.getSubimage(x * 128, y * 128, 128, 128), "png", file);
-                                            lastUsedNumber++;
-                                        }
-                                    }
-                                    if (giveFrames) {
-                                        int mapAmount = width * height;
-                                        HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.ITEM_FRAME, mapAmount));
-                                        for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
-                                            player.getWorld().dropItem(player.getLocation(), entry.getValue());
-                                        }
-                                    }
-                                    for (String str : links) {
-                                        MapView view = Bukkit.createMap(player.getWorld());
-                                        view.getRenderers().clear();
-                                        Render renderer = new Render();
-                                        if (renderer.load(str)) {
-                                            view.addRenderer(renderer);
-                                            ItemStack map = new ItemStack(Material.FILLED_MAP);
-                                            MapMeta meta = (MapMeta) map.getItemMeta();
-                                            meta.setMapView(view);
-                                            map.setItemMeta(meta);
-                                            //Give maps and drop if inventory is full
-                                            HashMap<Integer, ItemStack> failedItems = player.getInventory().addItem(map);
-                                            for (Map.Entry<Integer, ItemStack> entry : failedItems.entrySet()) {
-                                                player.getWorld().dropItem(player.getLocation(), entry.getValue());
-                                            }
-                                            ImageManager manager = ImageManager.getInstance();
-                                            manager.saveImage(view.getId(), str);
-                                        }
-                                    }
-                                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.GREEN + "Map Created!");
-                                } else {
+                                    distributeMaps(player, args, height, width, image);
+                                    } else {
                                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "After calculating the optimal height we found the image is too tall. Max height is " + maxY + " maps");
                                 }
                                 return true;
@@ -214,54 +115,7 @@ public class MapCommand implements CommandExecutor {
                             try {
                                 URL url = new URL(args[2]);
                                 BufferedImage image = ImageIO.read(url);
-                                image = resize(image, 128 * width, 128 * height);
-                                int lastUsedNumber = -1;
-                                boolean foundNumber = false;
-                                Path folderPath = ImageMapRenderer.plugin.getDataFolder().toPath();
-                                while (!foundNumber) {
-                                    lastUsedNumber++;
-                                    Path filePath = Paths.get(folderPath.toString(), String.valueOf(lastUsedNumber) + ".png");
-                                    if (!filePath.toFile().exists()) {
-                                        foundNumber = true;
-                                    }
-                                }
-                                ArrayList<String> links = new ArrayList<String>();
-                                for (int x = 0; x < image.getWidth() / 128; x++) {
-                                    for (int y = 0; y < image.getHeight() / 128; y++) {
-                                        File file = Paths.get(folderPath.toString(), String.valueOf(lastUsedNumber) + ".png").toFile();
-                                        links.add(file.toPath().toUri().toString());
-                                        ImageIO.write(image.getSubimage(x * 128, y * 128, 128, 128), "png", file);
-                                        lastUsedNumber++;
-                                    }
-                                }
-                                if (giveFrames) {
-                                    int mapAmount = width * height;
-                                    HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.ITEM_FRAME, mapAmount));
-                                    for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
-                                        player.getWorld().dropItem(player.getLocation(), entry.getValue());
-                                    }
-                                }
-                                for (String str : links) {
-                                    MapView view = Bukkit.createMap(player.getWorld());
-                                    view.getRenderers().clear();
-                                    Render renderer = new Render();
-                                    if (renderer.load(str)) {
-                                        view.addRenderer(renderer);
-                                        ItemStack map = new ItemStack(Material.FILLED_MAP);
-                                        MapMeta meta = (MapMeta) map.getItemMeta();
-                                        meta.setMapView(view);
-                                        map.setItemMeta(meta);
-                                        //Give maps and drop if inventory is full
-                                        HashMap<Integer, ItemStack> failedMaps = player.getInventory().addItem(map);
-                                        for (Map.Entry<Integer, ItemStack> entry : failedMaps.entrySet()) {
-                                            player.getWorld().dropItem(player.getLocation(), entry.getValue());
-                                        }
-                                        ImageManager manager = ImageManager.getInstance();
-                                        manager.saveImage(view.getId(), str);
-                                    }
-                                }
-                                player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.GREEN + "Map Created!");
-                                return true;
+                                distributeMaps(player, args, height, width, image);
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.RED + "Image could not be loaded. This can happen because the link is not direct. The easiest way to ensure the link is a direct link, is to send the image over discord then use \"copy link\"");
@@ -297,5 +151,59 @@ public class MapCommand implements CommandExecutor {
         g2d.dispose();
 
         return dimg;
+    }
+
+    public void distributeMaps (Player player, String[] args, Integer height, Integer width, BufferedImage image) throws IOException {
+        int maxX = ImageMapRenderer.plugin.getConfig().getInt("maxX");
+        int maxY = ImageMapRenderer.plugin.getConfig().getInt("maxY");
+        boolean giveFrames = ImageMapRenderer.plugin.getConfig().getBoolean("giveItemFrames");
+
+        image = resize(image, 128 * width, 128 * height);
+        int lastUsedNumber = -1;
+        boolean foundNumber = false;
+        Path folderPath = ImageMapRenderer.plugin.getDataFolder().toPath();
+        while (!foundNumber) {
+            lastUsedNumber++;
+            Path filePath = Paths.get(folderPath.toString(), String.valueOf(lastUsedNumber) + ".png");
+            if (!filePath.toFile().exists()) {
+                foundNumber = true;
+            }
+        }
+        ArrayList<String> links = new ArrayList<String>();
+        for (int x = 0; x < image.getWidth() / 128; x++) {
+            for (int y = 0; y < image.getHeight() / 128; y++) {
+                File file = Paths.get(folderPath.toString(), String.valueOf(lastUsedNumber) + ".png").toFile();
+                links.add(file.toPath().toUri().toString());
+                ImageIO.write(image.getSubimage(x * 128, y * 128, 128, 128), "png", file);
+                lastUsedNumber++;
+            }
+        }
+        if (giveFrames) {
+            int mapAmount = width * height;
+            HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.ITEM_FRAME, mapAmount));
+            for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
+                player.getWorld().dropItem(player.getLocation(), entry.getValue());
+            }
+        }
+        for (String str : links) {
+            MapView view = Bukkit.createMap(player.getWorld());
+            view.getRenderers().clear();
+            Render renderer = new Render();
+            if (renderer.load(str)) {
+                view.addRenderer(renderer);
+                ItemStack map = new ItemStack(Material.FILLED_MAP);
+                MapMeta meta = (MapMeta) map.getItemMeta();
+                meta.setMapView(view);
+                map.setItemMeta(meta);
+                //Give maps and drop if inventory is full
+                HashMap<Integer, ItemStack> failedItems = player.getInventory().addItem(map);
+                for (Map.Entry<Integer, ItemStack> entry : failedItems.entrySet()) {
+                    player.getWorld().dropItem(player.getLocation(), entry.getValue());
+                }
+                ImageManager manager = ImageManager.getInstance();
+                manager.saveImage(view.getId(), str);
+            }
+        }
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.GREEN + "Map Created!");
     }
 }
