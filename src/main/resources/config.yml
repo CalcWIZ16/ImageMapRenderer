@@ -1,10 +1,6 @@
 #Do not change version number
 configVersion: 2
 
-#Changes the command used by the player to render maps
-#Default: "map"
-mapCommand: "map"
-
 #Changes the prefix of messages from the plugin (supports Minecraft color codes)
 #Default: "&3Custom Image Maps&r&7&k | "
 prefix: "&3Custom Image Maps&r&7&k | "
