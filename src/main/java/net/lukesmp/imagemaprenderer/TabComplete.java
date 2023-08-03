@@ -7,21 +7,42 @@ import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class TabComplete implements TabCompleter {
-    private static final String[] COMMANDS = { "Regular", "Glowing" };
-    //create a static array of values
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        //create new array
-        final List<String> completions = new ArrayList<>();
-        //copy matches of first argument from list (ex: if first arg is 'm' will return just 'minecraft')
-        StringUtil.copyPartialMatches(args[0], Arrays.asList(COMMANDS), completions);
-        //sort the list
-        //Collections.sort(completions);
-        //Edit: sorting the list it's not required anymore
-        return completions;
+    List<String> arguments4 = Arrays.asList("Regular", "Glowing");
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+
+        List<String> results = new ArrayList<String>();
+        if (args.length==1 || args.length==2) {
+            return Collections.singletonList("~");
+        }
+        if (args.length==4) {
+            boolean glowing = false;
+            boolean regular = false;
+            if (sender.hasPermission("imagemaprenderer.glowItemFrames")&&ImageMapRenderer.plugin.getConfig().getBoolean("giveGlowItemFrames")) {
+                glowing = true;
+            }
+            if (sender.hasPermission("imagemaprenderer.itemFrames")&&ImageMapRenderer.plugin.getConfig().getBoolean("giveItemFrames")) {
+                regular = true;
+            }
+            if (glowing && regular) {
+                for (String a : arguments4) {
+                    if (a.toLowerCase().startsWith(args[3].toLowerCase())) {
+                        results.add(a);
+                    }
+                }
+                return results;
+            } else if (glowing) {
+                return Collections.singletonList("Glowing");
+            } else if (regular) {
+                return Collections.singletonList("Regular");
+            } else {
+                return null;
+            }
+        }
+        return null;
     }
 }
