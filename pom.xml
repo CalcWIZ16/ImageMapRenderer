@@ -6,7 +6,7 @@
 
     <groupId>net.lukesmp</groupId>
     <artifactId>ImageMapRenderer</artifactId>
-    <version>4.10</version>
+    <version>4.9</version>
     <packaging>jar</packaging>
 
     <name>ImageMapRenderer</name>
