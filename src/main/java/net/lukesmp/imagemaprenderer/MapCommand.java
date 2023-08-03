@@ -184,26 +184,28 @@ public class MapCommand implements CommandExecutor {
             int mapAmount = width * height;
             if (args[3]=="Regular") {
                 if (giveItemFrames==true) {
-
+                    HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.ITEM_FRAME, mapAmount));
+                    for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
+                        player.getWorld().dropItem(player.getLocation(), entry.getValue());
+                    }
                 }else {
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "You cannot receive this type of item frame");
                 }
-            }
-            if (args[3]=="Glowing") {
+            } else if (args[3]=="Glowing") {
                 if (giveGlowItemFrames) {
-
+                    HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.GLOW_ITEM_FRAME, mapAmount));
+                    for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
+                        player.getWorld().dropItem(player.getLocation(), entry.getValue());
+                    }
                 } else {
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "You cannot receive this type of item frame");
                 }
+            } else {
+                if (giveItemFrames==true || giveGlowItemFrames==true) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "You must enter a valid type of item frame");
+                }
             }
         }
-//        if (giveFrames) {
-//            int mapAmount = width * height;
-//            HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.ITEM_FRAME, mapAmount));
-//            for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
-//                player.getWorld().dropItem(player.getLocation(), entry.getValue());
-//            }
-//        }
         for (String str : links) {
             MapView view = Bukkit.createMap(player.getWorld());
             view.getRenderers().clear();
