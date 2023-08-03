@@ -131,10 +131,10 @@ public class MapCommand implements CommandExecutor {
                         player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.RED + "Must specify at least one dimension");
                         return true;
                     }
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.RED + "Usage: /map <width> <height> <link>");
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.RED + "Usage: /map <width> <height> <link> <frame>");
                     return true;
                 }
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.RED + "Usage: /map <width> <height> <link>");
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.RED + "Usage: /map <width> <height> <link> <frame>");
                 return true;
             }
             return true;
@@ -191,6 +191,7 @@ public class MapCommand implements CommandExecutor {
                     }
                 }else {
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "You cannot receive this type of Item Frame");
+                    return;
                 }
             } else if (Objects.equals(args[3], "Glowing")) {
                 if (giveGlowItemFrames && player.hasPermission("imagemaprenderer.glowItemFrames")) {
@@ -200,10 +201,12 @@ public class MapCommand implements CommandExecutor {
                     }
                 } else {
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "You cannot receive this type of Item Frame");
+                    return;
                 }
             } else {
                 if (giveItemFrames || giveGlowItemFrames) {
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "You must enter a valid type of Item Frame (Regular or Glowing)");
+                    return;
                 }
             }
         }

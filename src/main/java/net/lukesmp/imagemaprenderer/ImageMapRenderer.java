@@ -33,7 +33,7 @@ public final class ImageMapRenderer extends JavaPlugin {
 
     public void ConfigUpdate() {
         //Load old config
-        int configVersion = 2;
+        int configVersion = 3;
         File oldConfigFile = new File(getDataFolder(), "config.yml");
         FileConfiguration oldConfigFileConfiguration = YamlConfiguration.loadConfiguration(oldConfigFile);
         if (oldConfigFileConfiguration.getInt("configVersion") == configVersion) {
