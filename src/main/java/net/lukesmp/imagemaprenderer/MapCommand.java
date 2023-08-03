@@ -56,6 +56,28 @@ public class MapCommand implements CommandExecutor {
                     int maxX = ImageMapRenderer.plugin.getConfig().getInt("maxX");
                     int maxY = ImageMapRenderer.plugin.getConfig().getInt("maxY");
                     boolean giveFrames = ImageMapRenderer.plugin.getConfig().getBoolean("giveItemFrames");
+
+                    if (args.length>3){
+                        boolean giveItemFrames = ImageMapRenderer.plugin.getConfig().getBoolean("giveItemFrames");
+                        boolean giveGlowItemFrames = ImageMapRenderer.plugin.getConfig().getBoolean("giveGlowItemFrames");
+                        if (Objects.equals(args[3], "Regular")) {
+                            if (!giveItemFrames || !player.hasPermission("imagemaprenderer.itemFrames")) {
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "You cannot receive this type of Item Frame");
+                                return true;
+                            }
+                        } else if (Objects.equals(args[3], "Glowing")) {
+                            if (!giveGlowItemFrames || !player.hasPermission("imagemaprenderer.glowItemFrames")) {
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "You cannot receive this type of Item Frame");
+                                return true;
+                            }
+                        } else {
+                            if (giveItemFrames || giveGlowItemFrames) {
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "You must enter a valid type of Item Frame (Regular or Glowing)");
+                                return true;
+                            }
+                        }
+                    }
+
                     //Y value given, calculate X value
                     if (args[0].equals("~")&&isInt(args[1])){
                         int height = Integer.parseInt(args[1]);
@@ -184,29 +206,14 @@ public class MapCommand implements CommandExecutor {
             Boolean giveGlowItemFrames = ImageMapRenderer.plugin.getConfig().getBoolean("giveGlowItemFrames");
             int mapAmount = width * height;
             if (Objects.equals(args[3], "Regular")) {
-                if (giveItemFrames && player.hasPermission("imagemaprenderer.itemFrames")) {
-                    HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.ITEM_FRAME, mapAmount));
-                    for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
-                        player.getWorld().dropItem(player.getLocation(), entry.getValue());
-                    }
-                }else {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "You cannot receive this type of Item Frame");
-                    return;
+                HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.ITEM_FRAME, mapAmount));
+                for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
+                    player.getWorld().dropItem(player.getLocation(), entry.getValue());
                 }
             } else if (Objects.equals(args[3], "Glowing")) {
-                if (giveGlowItemFrames && player.hasPermission("imagemaprenderer.glowItemFrames")) {
-                    HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.GLOW_ITEM_FRAME, mapAmount));
-                    for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
-                        player.getWorld().dropItem(player.getLocation(), entry.getValue());
-                    }
-                } else {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "You cannot receive this type of Item Frame");
-                    return;
-                }
-            } else {
-                if (giveItemFrames || giveGlowItemFrames) {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "You must enter a valid type of Item Frame (Regular or Glowing)");
-                    return;
+                HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.GLOW_ITEM_FRAME, mapAmount));
+                for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
+                    player.getWorld().dropItem(player.getLocation(), entry.getValue());
                 }
             }
         }
