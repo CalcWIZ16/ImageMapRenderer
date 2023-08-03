@@ -178,13 +178,32 @@ public class MapCommand implements CommandExecutor {
                 lastUsedNumber++;
             }
         }
-        if (giveFrames) {
+        if (args.length>3){
+            Boolean giveItemFrames = ImageMapRenderer.plugin.getConfig().getBoolean("giveItemFrames");
+            Boolean giveGlowItemFrames = ImageMapRenderer.plugin.getConfig().getBoolean("giveGlowItemFrames");
             int mapAmount = width * height;
-            HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.ITEM_FRAME, mapAmount));
-            for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
-                player.getWorld().dropItem(player.getLocation(), entry.getValue());
+            if (args[3]=="Regular") {
+                if (giveItemFrames==true) {
+
+                }else {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "You cannot receive this type of item frame");
+                }
+            }
+            if (args[3]=="Glowing") {
+                if (giveGlowItemFrames) {
+
+                } else {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "You cannot receive this type of item frame");
+                }
             }
         }
+//        if (giveFrames) {
+//            int mapAmount = width * height;
+//            HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.ITEM_FRAME, mapAmount));
+//            for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
+//                player.getWorld().dropItem(player.getLocation(), entry.getValue());
+//            }
+//        }
         for (String str : links) {
             MapView view = Bukkit.createMap(player.getWorld());
             view.getRenderers().clear();
@@ -193,6 +212,7 @@ public class MapCommand implements CommandExecutor {
                 view.addRenderer(renderer);
                 ItemStack map = new ItemStack(Material.FILLED_MAP);
                 MapMeta meta = (MapMeta) map.getItemMeta();
+                assert meta != null;
                 meta.setMapView(view);
                 map.setItemMeta(meta);
                 //Give maps and drop if inventory is full

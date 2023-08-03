@@ -13,5 +13,5 @@ maxX: 12
 maxY: 12
 
 #A toggle to allow the option to receive (glow) item frames upon map creation
-allowItemFrames: false
-allowGlowItemFrames: false
+giveItemFrames: false
+giveGlowItemFrames: false
