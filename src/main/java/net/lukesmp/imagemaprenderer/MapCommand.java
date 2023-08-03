@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class MapCommand implements CommandExecutor {
     String prefix = ImageMapRenderer.plugin.getConfig().getString("prefix");
@@ -182,8 +183,8 @@ public class MapCommand implements CommandExecutor {
             Boolean giveItemFrames = ImageMapRenderer.plugin.getConfig().getBoolean("giveItemFrames");
             Boolean giveGlowItemFrames = ImageMapRenderer.plugin.getConfig().getBoolean("giveGlowItemFrames");
             int mapAmount = width * height;
-            if (args[3]=="Regular") {
-                if (giveItemFrames==true) {
+            if (Objects.equals(args[3], "Regular")) {
+                if (giveItemFrames) {
                     HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.ITEM_FRAME, mapAmount));
                     for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
                         player.getWorld().dropItem(player.getLocation(), entry.getValue());
@@ -191,7 +192,7 @@ public class MapCommand implements CommandExecutor {
                 }else {
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "You cannot receive this type of item frame");
                 }
-            } else if (args[3]=="Glowing") {
+            } else if (Objects.equals(args[3], "Glowing")) {
                 if (giveGlowItemFrames) {
                     HashMap<Integer, ItemStack> failedFrames = player.getInventory().addItem(new ItemStack(Material.GLOW_ITEM_FRAME, mapAmount));
                     for (Map.Entry<Integer, ItemStack> entry : failedFrames.entrySet()) {
@@ -201,7 +202,7 @@ public class MapCommand implements CommandExecutor {
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "You cannot receive this type of item frame");
                 }
             } else {
-                if (giveItemFrames==true || giveGlowItemFrames==true) {
+                if (giveItemFrames || giveGlowItemFrames) {
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "You must enter a valid type of item frame");
                 }
             }
