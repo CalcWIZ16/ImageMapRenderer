@@ -7,7 +7,7 @@ description: A SpigotMC plugin that can take images from the internet and render
 website: https://www.lukesmp.net
 commands:
   map:
-    usage: /map <width> <height> <link> <frame>
+    usage: /map <width> <height> <link> <frame type>
     description: Renders an image on a map
     permission: imagemaprenderer.map
 #  invisible:
