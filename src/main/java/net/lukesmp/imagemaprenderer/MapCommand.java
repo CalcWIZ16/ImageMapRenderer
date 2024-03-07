@@ -180,22 +180,30 @@ public class MapCommand implements CommandExecutor {
         int maxX = ImageMapRenderer.plugin.getConfig().getInt("maxX");
         int maxY = ImageMapRenderer.plugin.getConfig().getInt("maxY");
         boolean giveFrames = ImageMapRenderer.plugin.getConfig().getBoolean("giveItemFrames");
+        ArrayList<Map> maps = new ArrayList<>();
 
-        image = resize(image, 128 * width, 128 * height);
-        int lastUsedNumber = -1;
-        boolean foundNumber = false;
-        Path folderPath = ImageMapRenderer.plugin.getDataFolder().toPath();
-        while (!foundNumber) {
-            lastUsedNumber++;
-            Path filePath = Paths.get(folderPath.toString(), String.valueOf(lastUsedNumber) + ".png");
-            if (!filePath.toFile().exists()) {
-                foundNumber = true;
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                MapView view = Bukkit.createMap(player.getWorld());
             }
         }
+
+
+        image = resize(image, 128 * width, 128 * height);
+//        int lastUsedNumber = -1;
+//        boolean foundNumber = false;
+//        Path folderPath = ImageMapRenderer.plugin.getDataFolder().toPath();
+//        while (!foundNumber) {
+//            lastUsedNumber++;
+//            Path filePath = Paths.get(folderPath.toString(), String.valueOf(lastUsedNumber) + ".png");
+//            if (!filePath.toFile().exists()) {
+//                foundNumber = true;
+//            }
+//        }
         ArrayList<String> links = new ArrayList<String>();
         for (int x = 0; x < image.getWidth() / 128; x++) {
             for (int y = 0; y < image.getHeight() / 128; y++) {
-                File file = Paths.get(folderPath.toString(), String.valueOf(lastUsedNumber) + ".png").toFile();
+                File file = Paths.get(folderPath.toString(), String.valueOf(view) + ".png").toFile();
                 links.add(file.toPath().toUri().toString());
                 ImageIO.write(image.getSubimage(x * 128, y * 128, 128, 128), "png", file);
                 lastUsedNumber++;
