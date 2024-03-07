@@ -34,14 +34,14 @@ public final class ImageMapRenderer extends JavaPlugin {
 
     public void ConfigUpdate() {
         //Load old config
-        int configVersion = 3;
+        int configVersion = 4;
         File oldConfigFile = new File(getDataFolder(), "config.yml");
         FileConfiguration oldConfigFileConfiguration = YamlConfiguration.loadConfiguration(oldConfigFile);
         if (oldConfigFileConfiguration.getInt("configVersion") == configVersion) {
             saveDefaultConfig();
         } else {
             //Delete old config
-            oldConfigFile.delete();
+            oldConfigFile.renameTo(new File("config.yml.old"));
 
             //create and load new config file
             saveDefaultConfig();
@@ -56,8 +56,11 @@ public final class ImageMapRenderer extends JavaPlugin {
             try {
                 newConfigFileConfiguration.save(newConfigFile);
                 Bukkit.getConsoleSender().sendMessage("Configuration updated successfully");
+                oldConfigFile.delete();
             } catch (IOException e) {
                 Bukkit.getConsoleSender().sendMessage("An error occured when trying to update the config file");
+                oldConfigFile.renameTo(new File("config.yml"));
+
             }
         }
     }
