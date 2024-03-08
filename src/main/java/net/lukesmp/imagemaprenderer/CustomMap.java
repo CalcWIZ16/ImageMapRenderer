@@ -1,6 +1,7 @@
 package net.lukesmp.imagemaprenderer;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class CustomMap {
+    String prefix = ImageMapRenderer.plugin.getConfig().getString("prefix");
     private BufferedImage image;
     private int id;
 
@@ -42,5 +44,6 @@ public class CustomMap {
         } else {
             player.getInventory().addItem(map);
         }
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.GREEN + "Map Created!");
     }
 }

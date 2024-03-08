@@ -9,7 +9,7 @@ public class CustomMapArray {
     private int mapWidth;
     private int mapHeight;
     private BufferedImage image;
-    private BufferedImage[] images;
+    private CustomMap[] maps;
 
     /**
      * Constructor for CustomMapArray
@@ -20,10 +20,10 @@ public class CustomMapArray {
     public CustomMapArray(int numMapsWidth, int numMapsHeight, BufferedImage image) {
         this.image = image;
         if (numMapsWidth == -1 && numMapsHeight == -1) {
-                this.numMapsWidth = 1;
-                this.numMapsHeight = 1;
-                this.mapWidth = image.getWidth();
-                this.mapHeight = image.getHeight();
+            this.numMapsWidth = 1;
+            this.numMapsHeight = 1;
+            this.mapWidth = image.getWidth();
+            this.mapHeight = image.getHeight();
         } else if (numMapsWidth == -1) {
             this.mapWidth = image.getWidth() / numMapsHeight;
             this.mapHeight = image.getHeight() / numMapsHeight;
@@ -45,14 +45,14 @@ public class CustomMapArray {
         }
     }
 
-    public BufferedImage[] splitImage() {
-        images = new BufferedImage[numMapsWidth*numMapsHeight];
+    public CustomMap[] splitImage() {
+        maps = new CustomMap[numMapsWidth*numMapsHeight];
         for (int i = 0; i < numMapsWidth; i++) {
             for (int j = 0; j < numMapsHeight; j++) {
-                images[i + j * numMapsWidth] = image.getSubimage(i * mapWidth, j * mapHeight, mapWidth, mapHeight);
+                maps[i + j * numMapsWidth] = new CustomMap(image.getSubimage(i * mapWidth, j * mapHeight, mapWidth, mapHeight));
             }
         }
-        return images;
+        return maps;
     }
 
     public int getNumMapsWidth() {
