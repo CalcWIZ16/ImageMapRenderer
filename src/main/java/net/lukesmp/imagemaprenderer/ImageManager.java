@@ -26,10 +26,6 @@ public class ImageManager implements Listener {
     private CustomFile dataFile = new CustomFile("data.yml");
     private Map<Integer, String> savedImages = new HashMap<Integer, String>();
 
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, ImageMapRenderer.getPlugin(ImageMapRenderer.class));
-        loadImages();
-    }
     @EventHandler
     public void onMapInitEvent(MapInitializeEvent event) {
         if (hasImage(event.getMap().getId())) {
@@ -44,7 +40,7 @@ public class ImageManager implements Listener {
         getData().set("ids." + id, url);
         saveData();
     }
-    private void loadImages() {
+    public void loadImages() {
         if (getData().contains("ids"))
             getData().getConfigurationSection("ids").getKeys(false).forEach(id -> {
                 savedImages.put(Integer.parseInt(id), getData().getString("ids." + id));

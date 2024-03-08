@@ -19,8 +19,7 @@ public final class ImageMapRenderer extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         plugin = this;
-        ImageManager manager=ImageManager.getInstance();
-        manager.init();
+        Bukkit.getServer().getPluginManager().registerEvents(, ImageMapRenderer.getPlugin(ImageMapRenderer.class));
         ConfigUpdate();
         this.getCommand("map").setExecutor(new MapCommand());
         this.getCommand("map").setTabCompleter(new TabComplete());
