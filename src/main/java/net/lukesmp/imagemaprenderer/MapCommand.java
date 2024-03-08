@@ -85,15 +85,14 @@ public class MapCommand implements CommandExecutor {
                             try {
                                 URL url = new URL(args[2]);
                                 BufferedImage image = ImageIO.read(url);
-                                float pixelsPerMapEdge = (float) image.getHeight() /height;
-                                int width = Math.round(image.getWidth()/pixelsPerMapEdge);
-                                if (width<=maxX) {
-                                    distributeMaps(player, args, height, width, image);
+                                CustomMapArray mapArray = new CustomMapArray(-1, height, image);
+                                if (mapArray.getNumMapsWidth()<=maxX) {
+                                    mapArray.splitImage();
                                     return true;
                                 } else {
                                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "After calculating the optimal width we found the image is too wide. Max width is " + maxX + " maps");
+                                    return true;
                                 }
-                                return true;
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.RED + "Image could not be loaded. This can happen because the link is not direct. The easiest way to ensure the link is a direct link, is to send the image over discord then use \"copy link\"");
@@ -111,14 +110,14 @@ public class MapCommand implements CommandExecutor {
                             try {
                                 URL url = new URL(args[2]);
                                 BufferedImage image = ImageIO.read(url);
-                                float pixelsPerMapEdge = (float) image.getWidth() /width;
-                                int height = Math.round(image.getHeight()/pixelsPerMapEdge);
-                                if (height<=maxY) {
-                                    distributeMaps(player, args, height, width, image);
-                                    } else {
+                                CustomMapArray mapArray = new CustomMapArray(width, -1, image);
+                                if (mapArray.getNumMapsHeight()<=maxY) {
+                                    mapArray.splitImage();
+                                    return true;
+                                } else {
                                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "After calculating the optimal height we found the image is too tall. Max height is " + maxY + " maps");
+                                    return true;
                                 }
-                                return true;
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.RED + "Image could not be loaded. This can happen because the link is not direct. The easiest way to ensure the link is a direct link, is to send the image over discord then use \"copy link\"");
@@ -138,7 +137,9 @@ public class MapCommand implements CommandExecutor {
                             try {
                                 URL url = new URL(args[2]);
                                 BufferedImage image = ImageIO.read(url);
-                                distributeMaps(player, args, height, width, image);
+                                CustomMapArray mapArray = new CustomMapArray(width, height, image);
+                                mapArray.splitImage();
+                                return true;
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.RED + "Image could not be loaded. This can happen because the link is not direct. The easiest way to ensure the link is a direct link, is to send the image over discord then use \"copy link\"");
