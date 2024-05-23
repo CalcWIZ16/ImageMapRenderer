@@ -5,12 +5,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.net.URL;
-import java.util.Objects;
 
 public class MapCommand implements CommandExecutor {
     String prefix = ImageMapRenderer.plugin.getConfig().getString("prefix");
@@ -43,7 +41,6 @@ public class MapCommand implements CommandExecutor {
                 int mapArrayHeight = -1;
                 boolean giveItemFrames;
                 boolean giveGlowItemFrames;
-                URL url = null;
 
                 if (args.length<2){
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.RED + "Usage: /map <width> <height> <link> <frame type>");
@@ -52,24 +49,31 @@ public class MapCommand implements CommandExecutor {
                     if (args[0].equals("~") && args[1].equals("~")) {
                         player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "Must specify at least one dimension");
                         return true;
-                    }
-                    if (args[0].equals("~")) {
+                    } else if (args[0].equals("~")) {
                         if (!isInt(args[1])) {
                             player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "Usage: /map <width> <height> <link> <frame type>");
                             return true;
                         } else {
                             mapArrayHeight = Integer.parseInt(args[1]);
                         }
-                    }
-                    if (args[1].equals("~")) {
+                    } else if (args[1].equals("~")) {
                         if (!isInt(args[0])) {
                             player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "Usage: /map <width> <height> <link> <frame type>");
                             return true;
                         } else {
                             mapArrayWidth = Integer.parseInt(args[0]);
                         }
+                    } else {
+                        if (!isInt(args[0]) || !isInt(args[1])) {
+                            player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "Usage: /map <width> <height> <link> <frame type>");
+                            return true;
+                        } else {
+                            mapArrayWidth = Integer.parseInt(args[0]);
+                            mapArrayHeight = Integer.parseInt(args[1]);
+                        }
                     }
                 }
+
                 if (args.length==4) {
                     if (args[3].equals("Regular")) {
                         if (!player.hasPermission("imagemaprenderer.itemFrames")) {
@@ -88,6 +92,7 @@ public class MapCommand implements CommandExecutor {
                 }
 
                 try {
+                    URL url = new URL(args[2]);
                     url = new URL(parseDiscordMetadata(args[2]));
                     BufferedImage image = ImageIO.read(url);
                     CustomMapArray mapArray = new CustomMapArray(mapArrayWidth, mapArrayHeight, image);

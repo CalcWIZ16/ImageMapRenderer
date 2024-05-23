@@ -49,9 +49,6 @@ public class ImageManager implements Listener {
 
     private void loadImages() {
         File imageFolder = new File("plugins/ImageMapRenderer/images");
-        if (!imageFolder.exists()) {
-            imageFolder.mkdirs();
-        }
         for (String fileName : imageFolder.list()) {
             managedMapIds.add(Integer.parseInt(fileName.replace(".png", "")));
         }

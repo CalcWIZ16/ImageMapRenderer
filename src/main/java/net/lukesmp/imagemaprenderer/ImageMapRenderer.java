@@ -8,6 +8,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 
 public final class ImageMapRenderer extends JavaPlugin implements Listener {
 
@@ -19,12 +24,13 @@ public final class ImageMapRenderer extends JavaPlugin implements Listener {
         plugin = this;
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
 
+        //Update config
+        saveDefaultConfig();
+        ConfigUpdate();
+
         //Load images
         ImageManager manager = ImageManager.getInstance();
         manager.init();
-
-        //Update config
-        ConfigUpdate();
 
         //Register commands
         this.getCommand("map").setExecutor(new MapCommand());
@@ -37,36 +43,116 @@ public final class ImageMapRenderer extends JavaPlugin implements Listener {
         // Plugin shutdown logic
     }
 
-    public void ConfigUpdate() {
+    private void ConfigUpdate() {
         //Load old config
         int configVersion = 4;
         File oldConfigFile = new File(getDataFolder(), "config.yml");
         FileConfiguration oldConfigFileConfiguration = YamlConfiguration.loadConfiguration(oldConfigFile);
-        if (oldConfigFileConfiguration.getInt("configVersion") == configVersion) {
-            saveDefaultConfig();
-        } else {
-            //Delete old config
-            oldConfigFile.renameTo(new File("config.yml.old"));
 
-            //create and load new config file
+        if (oldConfigFileConfiguration.getInt("configVersion") < configVersion) {
+            if (oldConfigFileConfiguration.getInt("configVersion") <= 4) {
+                imageUpdate();
+            }
+
+            File oldConfigFileRenamed = new File(getDataFolder(), "config.yml.old");
+            if (!oldConfigFile.renameTo(oldConfigFileRenamed)) {
+                Bukkit.getConsoleSender().sendMessage("ImageMapRenderer: Could not rename old config file");
+            }
+
             saveDefaultConfig();
+
             File newConfigFile = new File(getDataFolder(), "config.yml");
-            FileConfiguration newConfigFileConfiguration = YamlConfiguration.loadConfiguration(newConfigFile);
+            FileConfiguration newConfig = YamlConfiguration.loadConfiguration(newConfigFile);
 
-            //replace new file values with old file values (except configVersion)
             for (String key : oldConfigFileConfiguration.getKeys(true)) {
-                newConfigFileConfiguration.set(key, oldConfigFileConfiguration.get(key));
+                if (!key.equals("configVersion")) {
+                    newConfig.set(key, oldConfigFileConfiguration.get(key));
+                }
             }
-            newConfigFileConfiguration.set("configVersion", configVersion);
-            try {
-                newConfigFileConfiguration.save(newConfigFile);
-                Bukkit.getConsoleSender().sendMessage("Configuration updated successfully");
-                oldConfigFile.delete();
-            } catch (IOException e) {
-                Bukkit.getConsoleSender().sendMessage("An error occured when trying to update the config file");
-                oldConfigFile.renameTo(new File("config.yml"));
 
+            newConfig.set("configVersion", configVersion);
+
+            try {
+                newConfig.save(newConfigFile);
+                Bukkit.getConsoleSender().sendMessage("ImageMapRenderer: Configuration updated successfully");
+                oldConfigFileRenamed.delete();
+            } catch (IOException e) {
+                Bukkit.getConsoleSender().sendMessage("ImageMapRenderer: An error occured when trying to update the config file");
+                oldConfigFileRenamed.renameTo(oldConfigFile);
             }
+        }
+    }
+
+    //upgrade images data from data.yml to images folder
+    private void imageUpdate() {
+        File dataFile = new File(getDataFolder(), "data.yml");
+        File imagesFolder = new File(getDataFolder(), "images");
+
+        if (!imagesFolder.exists()) {
+            imagesFolder.mkdirs();
+        }
+
+        if (dataFile.exists()) {
+            Bukkit.getConsoleSender().sendMessage("ImageMapRenderer: Updating image files");
+            FileConfiguration dataFileConfiguration = YamlConfiguration.loadConfiguration(dataFile);
+            //takes images references in data.yml and stored in the config directory and move the images to the images folder with the map id as the name
+            for (String key : dataFileConfiguration.getKeys(false)) {
+                String imagePath = dataFileConfiguration.getString(key);
+                File imageFile = new File(getDataFolder(), imagePath);
+                if (imageFile.exists()) {
+                    File newImageFile = new File(getDataFolder(), "images/" + key + ".png");
+                    try {
+                        imageFile.renameTo(newImageFile);
+                    } catch (Exception e) {
+                        Bukkit.getConsoleSender().sendMessage("An error occured when trying to update the image files");
+                    }
+                }
+            }
+        }
+
+        class CustomFile {
+            private final ImageMapRenderer plugin = ImageMapRenderer.getPlugin(ImageMapRenderer.class);
+            private FileConfiguration dataConfig = null;
+            private File dataConfigFile = null;
+            private final String name;
+            public CustomFile(String name) {
+                this.name = name;
+                saveDefaultConfig();
+            }
+            public void reloadConfig() {
+                if (dataConfigFile == null)
+                    dataConfigFile = new File(plugin.getDataFolder(),name);
+                this.dataConfig = YamlConfiguration
+                        .loadConfiguration(dataConfigFile);
+                InputStream defConfigStream = plugin.getResource(name);
+                if (defConfigStream != null) {
+                    YamlConfiguration defConfig = YamlConfiguration
+                            .loadConfiguration(new InputStreamReader(defConfigStream));
+                    this.dataConfig.setDefaults(defConfig);
+                }
+            }
+            public FileConfiguration getConfig() {
+                if (this.dataConfig == null)
+                    reloadConfig();
+                return this.dataConfig;
+            }
+            public void saveConfig() {
+                if ((dataConfig == null) || (dataConfigFile == null))
+                    return;
+                try {
+                    getConfig().save(dataConfigFile);
+                } catch (IOException e) {
+                    plugin.getLogger().log(Level.SEVERE, "Could not save config to "
+                            + dataConfigFile, e);
+                }
+            }
+            public void saveDefaultConfig() {
+                if (dataConfigFile == null)
+                    dataConfigFile = new File(plugin.getDataFolder(), name);
+                if (!dataConfigFile.exists())
+                    plugin.saveResource(name, false);
+            }
+
         }
     }
 }
