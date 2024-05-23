@@ -4,7 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
+import org.checkerframework.checker.optional.qual.Present;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -25,14 +27,12 @@ public class CustomMapArray {
      * @param numMapsHeight height (in maps) of the array (if -1, the optimal height will be calculated)
      * @param image image to make up the array
      */
-    public CustomMapArray(int numMapsWidth, int numMapsHeight, BufferedImage image) {
-        this.image = image;
-
+    public CustomMapArray(int numMapsWidth, int numMapsHeight, BufferedImage image) {;
         if (numMapsWidth == -1 && numMapsHeight == -1) {
             this.numMapsWidth = 1;
             this.numMapsHeight = 1;
-            this.mapWidth = image.getWidth();
-            this.mapHeight = image.getHeight();
+
+            this.image = resize(image, 128, 128);
         } else if (numMapsWidth == -1) {
             this.mapWidth = image.getWidth() / numMapsHeight;
             this.mapHeight = image.getHeight() / numMapsHeight;
@@ -58,7 +58,7 @@ public class CustomMapArray {
         maps = new CustomMap[numMapsWidth*numMapsHeight];
         for (int i = 0; i < numMapsWidth; i++) {
             for (int j = 0; j < numMapsHeight; j++) {
-                maps[i + j * numMapsWidth] = new CustomMap(image.getSubimage(i * mapWidth, j * mapHeight, mapWidth, mapHeight));
+                maps[i + j * numMapsWidth] = new CustomMap(x * 128, y * 128, 128, 128));
             }
         }
     }
@@ -71,6 +71,17 @@ public class CustomMapArray {
             map.giveMap(player, mapView, renderer);
         }
         player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.GREEN + "Map(s) Created!");
+    }
+
+    public static BufferedImage resize(BufferedImage img, int newW, int newH) {
+        Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+        BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g2d = dimg.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+
+        return dimg;
     }
 
     public int getNumMapsWidth() {
