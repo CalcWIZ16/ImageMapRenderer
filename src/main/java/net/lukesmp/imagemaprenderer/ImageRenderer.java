@@ -1,5 +1,6 @@
 package net.lukesmp.imagemaprenderer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
@@ -51,9 +52,10 @@ public class ImageRenderer extends MapRenderer {
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
         if (done) {
-            mapCanvas.drawImage(0, 0, image);
-            mapView.setTrackingPosition(false);
-            done = true;
+            return;
         }
+        mapCanvas.drawImage(0, 0, image);
+        mapView.setTrackingPosition(false);
+        done = true;
     }
 }
