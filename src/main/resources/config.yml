@@ -1,5 +1,5 @@
 #Do not change version number
-configVersion: 3
+configVersion: 5
 
 #Changes the prefix of messages from the plugin (supports Minecraft color codes)
 #Default: "&3Custom Image Maps&r&7&k | "
