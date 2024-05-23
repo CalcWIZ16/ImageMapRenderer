@@ -33,12 +33,9 @@ public class ImageManager implements Listener {
 
     @EventHandler
     public void onMapInitEvent(MapInitializeEvent event) {
-        Bukkit.getConsoleSender().sendMessage("Map init event for map " + event.getMap().getId());
         if (managedMapIds.contains(event.getMap().getId())) {
-            Bukkit.getConsoleSender().sendMessage("Map " + event.getMap().getId() + " is managed");
             MapView view = event.getMap();
             view.getRenderers().clear();
-            Bukkit.getConsoleSender().sendMessage("Adding renderer for map " + view.getId());
             view.addRenderer(new ImageRenderer("file:///" + new File("plugins/ImageMapRenderer/images/" + view.getId() + ".png").getAbsolutePath()));
             view.setScale(MapView.Scale.FARTHEST);
             view.setTrackingPosition(false);
