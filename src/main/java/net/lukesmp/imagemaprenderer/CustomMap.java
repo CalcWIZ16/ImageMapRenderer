@@ -35,6 +35,13 @@ public class CustomMap {
         MapMeta meta = (MapMeta) map.getItemMeta();
         meta.setMapView(Bukkit.getMap(id));
         map.setItemMeta(meta);
+        //configure map view
+        MapView view = Bukkit.createMap(player.getWorld());
+        view.getRenderers().clear();
+        view.addRenderer(new Render());
+        meta.setMapView(view);
+        map.setItemMeta(meta);
+
         //check to see if player has inventory space
         if (player.getInventory().firstEmpty() == -1) {
             player.getWorld().dropItem(player.getLocation(), map);

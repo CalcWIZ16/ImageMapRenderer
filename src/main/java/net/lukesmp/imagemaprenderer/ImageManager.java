@@ -59,6 +59,7 @@ public class ImageManager implements Listener {
         private FileConfiguration dataConfig = null;
         private File dataConfigFile = null;
         private final String name;
+
         public CustomFile(String name) {
             this.name = name;
             saveDefaultConfig();

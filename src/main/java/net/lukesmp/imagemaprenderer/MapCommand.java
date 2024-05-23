@@ -79,6 +79,7 @@ public class MapCommand implements CommandExecutor {
                                 CustomMapArray mapArray = new CustomMapArray(-1, height, image);
                                 if (mapArray.getNumMapsWidth()<=maxX) {
                                     mapArray.createMaps();
+                                    mapArray.distributeMaps(player);
                                     return true;
                                 } else {
                                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "After calculating the optimal width we found the image is too wide. Max width is " + maxX + " maps");
@@ -104,6 +105,7 @@ public class MapCommand implements CommandExecutor {
                                 CustomMapArray mapArray = new CustomMapArray(width, -1, image);
                                 if (mapArray.getNumMapsHeight()<=maxY) {
                                     mapArray.createMaps();
+                                    mapArray.distributeMaps(player);
                                     return true;
                                 } else {
                                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.RED + "After calculating the optimal height we found the image is too tall. Max height is " + maxY + " maps");
@@ -130,7 +132,7 @@ public class MapCommand implements CommandExecutor {
                                 BufferedImage image = ImageIO.read(url);
                                 CustomMapArray mapArray = new CustomMapArray(width, height, image);
                                 mapArray.createMaps();
-                                mapArray.giveMaps(player);
+                                mapArray.distributeMaps(player);
                                 return true;
                             } catch (Exception e) {
                                 e.printStackTrace();
