@@ -52,11 +52,8 @@ public class CustomMapArray {
     }
 
     public void distributeMaps(Player player) {
-        MapView mapView = Bukkit.createMap(player.getWorld());
-        mapView.getRenderers().clear();
-        ImageRenderer renderer = new ImageRenderer();
         for (CustomMap map : maps) {
-            map.giveMap(player, mapView, renderer);
+            map.giveMap(player);
         }
         player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.GREEN + "Map(s) Created!");
     }

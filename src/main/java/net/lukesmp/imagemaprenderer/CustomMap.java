@@ -29,7 +29,10 @@ public class CustomMap {
         ImageIO.write(image, "png", new File("plugins/ImageMapRenderer/images/" + id + ".png"));
     }
 
-    public void giveMap(Player player, MapView mapView, ImageRenderer renderer) {
+    public void giveMap(Player player) {
+        MapView mapView = Bukkit.createMap(player.getWorld());
+        mapView.getRenderers().clear();
+        ImageRenderer renderer = new ImageRenderer();
         if (renderer.load("file:///" + new File("plugins/ImageMapRenderer/images/" + id + ".png").getAbsolutePath())) {
             mapView.addRenderer(renderer);
             ItemStack map = new ItemStack(Material.FILLED_MAP, 1);
