@@ -1,13 +1,16 @@
 package net.lukesmp.imagemaprenderer;
 
+import org.bukkit.entity.Player;
+
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class CustomMapArray {
 
-    private int numMapsWidth;
-    private int numMapsHeight;
-    private int mapWidth;
-    private int mapHeight;
+    private final int numMapsWidth;
+    private final int numMapsHeight;
+    private final int mapWidth;
+    private final int mapHeight;
     private BufferedImage image;
     private CustomMap[] maps;
 
@@ -45,14 +48,19 @@ public class CustomMapArray {
         }
     }
 
-    public CustomMap[] splitImage() {
+    public void createMaps() throws IOException {
         maps = new CustomMap[numMapsWidth*numMapsHeight];
         for (int i = 0; i < numMapsWidth; i++) {
             for (int j = 0; j < numMapsHeight; j++) {
                 maps[i + j * numMapsWidth] = new CustomMap(image.getSubimage(i * mapWidth, j * mapHeight, mapWidth, mapHeight));
             }
         }
-        return maps;
+    }
+
+    public void distributeMaps(Player player) {
+        for (CustomMap map : maps) {
+            map.giveMap(player);
+        }
     }
 
     public int getNumMapsWidth() {

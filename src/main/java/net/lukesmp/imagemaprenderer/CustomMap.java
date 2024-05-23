@@ -15,24 +15,21 @@ import java.io.IOException;
 
 public class CustomMap {
     String prefix = ImageMapRenderer.plugin.getConfig().getString("prefix");
-    private BufferedImage image;
+    private final BufferedImage image;
     private int id;
 
-    public CustomMap(BufferedImage image) {
+    public CustomMap(BufferedImage image) throws IOException {
         this.image = image;
-    }
-
-    public void createMap() {
         MapView map = Bukkit.createMap(Bukkit.getWorlds().get(0));
         map.getRenderers().clear();
         map.addRenderer(new Render());
         map.setScale(MapView.Scale.FARTHEST);
         map.setTrackingPosition(false);
         id = map.getId();
-    }
-    public void saveImage(Integer id, String url) throws IOException {
+        //save the image to the images folder
         ImageIO.write(image, "png", new File("plugins/ImageMapRenderer/images/" + id + ".png"));
     }
+
     public void giveMap(Player player) {
         ItemStack map = new ItemStack(Material.FILLED_MAP, 1);
         MapMeta meta = (MapMeta) map.getItemMeta();
