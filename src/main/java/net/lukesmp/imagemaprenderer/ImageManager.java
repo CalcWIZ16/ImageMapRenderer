@@ -29,14 +29,17 @@ public class ImageManager implements Listener {
 //    private CustomFile dataFile = new CustomFile("data.yml");
 //    private Map<Integer, String> savedImages = new HashMap<Integer, String>();
     private final File imageFolder = new File("plugins/ImageMapRenderer/images");
-    private ArrayList<Integer> managedMapIds = new ArrayList<>();
+    private final ArrayList<Integer> managedMapIds = new ArrayList<>();
 
     @EventHandler
     public void onMapInitEvent(MapInitializeEvent event) {
+        Bukkit.getConsoleSender().sendMessage("Map init event for map " + event.getMap().getId());
         if (managedMapIds.contains(event.getMap().getId())) {
+            Bukkit.getConsoleSender().sendMessage("Map " + event.getMap().getId() + " is managed");
             MapView view = event.getMap();
             view.getRenderers().clear();
-            view.addRenderer(new ImageRenderer("plugins/ImageMapRenderer/images/" + view.getId() + ".png"));
+            Bukkit.getConsoleSender().sendMessage("Adding renderer for map " + view.getId());
+            view.addRenderer(new ImageRenderer("file:///" + new File("plugins/ImageMapRenderer/images/" + view.getId() + ".png").getAbsolutePath()));
             view.setScale(MapView.Scale.FARTHEST);
             view.setTrackingPosition(false);
         }
@@ -45,6 +48,7 @@ public class ImageManager implements Listener {
     public void init() {
         Bukkit.getPluginManager().registerEvents(this, ImageMapRenderer.getPlugin(ImageMapRenderer.class));
         loadImages();
+        Bukkit.getConsoleSender().sendMessage("Loaded images: " + managedMapIds.size());
     }
 
     private void loadImages() {
@@ -54,6 +58,7 @@ public class ImageManager implements Listener {
         }
         for (String fileName : imageFolder.list()) {
             managedMapIds.add(Integer.parseInt(fileName.replace(".png", "")));
+            Bukkit.getConsoleSender().sendMessage("Loaded image: " + fileName + " with id " + Integer.parseInt(fileName.replace(".png", "")));
         }
     }
 

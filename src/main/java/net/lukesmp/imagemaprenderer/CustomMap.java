@@ -21,7 +21,7 @@ public class CustomMap {
         this.image = image;
         MapView map = Bukkit.createMap(Bukkit.getWorlds().get(0));
         map.getRenderers().clear();
-        map.addRenderer(new Render());
+        map.addRenderer(new ImageRenderer());
         map.setScale(MapView.Scale.FARTHEST);
         map.setTrackingPosition(false);
         id = map.getId();

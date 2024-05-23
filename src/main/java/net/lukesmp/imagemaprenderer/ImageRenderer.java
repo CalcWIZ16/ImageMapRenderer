@@ -1,5 +1,6 @@
 package net.lukesmp.imagemaprenderer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
