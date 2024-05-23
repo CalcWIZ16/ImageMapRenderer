@@ -137,22 +137,5 @@ public final class ImageMapRenderer extends JavaPlugin implements Listener {
                 reloadConfig();
             return this.dataConfig;
         }
-        public void saveConfig() {
-            if ((dataConfig == null) || (dataConfigFile == null))
-                return;
-            try {
-                getConfig().save(dataConfigFile);
-            } catch (IOException e) {
-                plugin.getLogger().log(Level.SEVERE, "Could not save config to "
-                        + dataConfigFile, e);
-            }
-        }
-        public void saveDefaultConfig() {
-            if (dataConfigFile == null)
-                dataConfigFile = new File(plugin.getDataFolder(), name);
-            if (!dataConfigFile.exists())
-                plugin.saveResource(name, false);
-        }
-
     }
 }
