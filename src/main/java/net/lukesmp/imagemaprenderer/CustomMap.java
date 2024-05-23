@@ -13,11 +13,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class CustomMap {
-    private final BufferedImage image;
     private final MapView mapView;
 
     public CustomMap(BufferedImage image) throws IOException {
-        this.image = image;
         this.mapView = Bukkit.createMap(Bukkit.getWorlds().get(0));
         this.mapView.getRenderers().clear();
         this.mapView.addRenderer(new ImageRenderer());
@@ -33,9 +31,13 @@ public class CustomMap {
         if (renderer.load("file:///" + new File("plugins/ImageMapRenderer/images/" + mapView.getId() + ".png").getAbsolutePath())) {
             this.mapView.addRenderer(renderer);
             ItemStack map = new ItemStack(Material.FILLED_MAP, 1);
+
+            //configure map meta
             MapMeta meta = (MapMeta) map.getItemMeta();
+            assert meta != null;
             meta.setMapView(mapView);
             map.setItemMeta(meta);
+
             //check to see if player has inventory space
             if (player.getInventory().firstEmpty() == -1) {
                 player.getWorld().dropItem(player.getLocation(), map);

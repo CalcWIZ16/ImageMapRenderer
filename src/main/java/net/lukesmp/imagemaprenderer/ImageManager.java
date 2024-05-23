@@ -45,7 +45,6 @@ public class ImageManager implements Listener {
     public void init() {
         Bukkit.getPluginManager().registerEvents(this, ImageMapRenderer.getPlugin(ImageMapRenderer.class));
         loadImages();
-        Bukkit.getConsoleSender().sendMessage("Loaded images: " + managedMapIds.size());
     }
 
     private void loadImages() {
@@ -55,7 +54,6 @@ public class ImageManager implements Listener {
         }
         for (String fileName : imageFolder.list()) {
             managedMapIds.add(Integer.parseInt(fileName.replace(".png", "")));
-            Bukkit.getConsoleSender().sendMessage("Loaded image: " + fileName + " with id " + Integer.parseInt(fileName.replace(".png", "")));
         }
     }
 
