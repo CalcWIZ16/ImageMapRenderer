@@ -61,7 +61,7 @@ public class MapCommand implements CommandExecutor {
                         int height = Integer.parseInt(args[1]);
                         if (height<=maxY){
                             try {
-                                URL url = new URL(args[2]);
+                                URL url = new URL(parseDiscordMetadata(args[2]));
                                 BufferedImage image = ImageIO.read(url);
                                 CustomMapArray mapArray = new CustomMapArray(-1, height, image);
                                 if (mapArray.getNumMapsWidth()<=maxX) {
@@ -87,7 +87,7 @@ public class MapCommand implements CommandExecutor {
                         int width = Integer.parseInt(args[0]);
                         if (width<=maxX){
                             try {
-                                URL url = new URL(args[2]);
+                                URL url = new URL(parseDiscordMetadata(args[2]));
                                 BufferedImage image = ImageIO.read(url);
                                 CustomMapArray mapArray = new CustomMapArray(width, -1, image);
                                 if (mapArray.getNumMapsHeight()<=maxY) {
@@ -115,7 +115,7 @@ public class MapCommand implements CommandExecutor {
                         int height = Integer.parseInt(args[1]);
                         if (width<=maxX&&height<=maxY) {
                             try {
-                                URL url = new URL(args[2]);
+                                URL url = new URL(parseDiscordMetadata(args[2]));
                                 BufferedImage image = ImageIO.read(url);
                                 CustomMapArray mapArray = new CustomMapArray(width, height, image);
                                 mapArray.createMaps();
@@ -145,5 +145,14 @@ public class MapCommand implements CommandExecutor {
         }
         sender.sendMessage("You must be a player to execute this command");
         return true;
+    }
+
+    public String parseDiscordMetadata(String url){
+        if (url.contains("discordapp.net/attachments/")){
+            if (url.contains("&format=")){
+                return url.substring(0,url.indexOf("&format=")-2);
+            }
+        }
+        return url;
     }
 }
