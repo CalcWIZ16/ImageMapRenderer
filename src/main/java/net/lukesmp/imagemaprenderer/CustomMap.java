@@ -1,7 +1,6 @@
 package net.lukesmp.imagemaprenderer;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -15,26 +14,24 @@ import java.io.IOException;
 
 public class CustomMap {
     private final BufferedImage image;
-    private int id;
+    private final MapView mapView;
 
     public CustomMap(BufferedImage image) throws IOException {
         this.image = image;
-        MapView map = Bukkit.createMap(Bukkit.getWorlds().get(0));
-        map.getRenderers().clear();
-        map.addRenderer(new ImageRenderer());
-        map.setScale(MapView.Scale.FARTHEST);
-        map.setTrackingPosition(false);
-        id = map.getId();
+        this.mapView = Bukkit.createMap(Bukkit.getWorlds().get(0));
+        this.mapView.getRenderers().clear();
+        this.mapView.addRenderer(new ImageRenderer());
+        this.mapView.setScale(MapView.Scale.FARTHEST);
+        this.mapView.setTrackingPosition(false);
         //save the image to the images folder
-        ImageIO.write(image, "png", new File("plugins/ImageMapRenderer/images/" + id + ".png"));
+        ImageIO.write(image, "png", new File("plugins/ImageMapRenderer/images/" + mapView.getId() + ".png"));
     }
 
     public void giveMap(Player player) {
-        MapView mapView = Bukkit.createMap(player.getWorld());
-        mapView.getRenderers().clear();
+        this.mapView.getRenderers().clear();
         ImageRenderer renderer = new ImageRenderer();
-        if (renderer.load("file:///" + new File("plugins/ImageMapRenderer/images/" + id + ".png").getAbsolutePath())) {
-            mapView.addRenderer(renderer);
+        if (renderer.load("file:///" + new File("plugins/ImageMapRenderer/images/" + mapView.getId() + ".png").getAbsolutePath())) {
+            this.mapView.addRenderer(renderer);
             ItemStack map = new ItemStack(Material.FILLED_MAP, 1);
             MapMeta meta = (MapMeta) map.getItemMeta();
             meta.setMapView(mapView);
