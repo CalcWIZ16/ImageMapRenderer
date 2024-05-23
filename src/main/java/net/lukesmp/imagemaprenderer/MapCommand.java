@@ -40,15 +40,6 @@ public class MapCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player=(Player) sender;
-            //invisible command
-//            if (label.equalsIgnoreCase("invisible")) {
-//                if (args.length==0) {
-//
-//                } else {
-//                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix)+ChatColor.RED + "Usage: /invisible");
-//                }
-//                return true;
-//            }
             //map command
             if (label.equalsIgnoreCase("map")) {
                 if (args.length>2) {

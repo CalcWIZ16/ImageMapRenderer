@@ -36,10 +36,6 @@ public class ImageManager implements Listener {
             view.setTrackingPosition(false);
         }
     }
-    public void saveImage(Integer id, String url) {
-        getData().set("ids." + id, url);
-        saveData();
-    }
     public void loadImages() {
         if (getData().contains("ids"))
             getData().getConfigurationSection("ids").getKeys(false).forEach(id -> {
