@@ -18,7 +18,15 @@ public final class ImageMapRenderer extends JavaPlugin implements Listener {
         // Plugin startup logic
         plugin = this;
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
+
+        //Load images
+        ImageManager manager = ImageManager.getInstance();
+        manager.init();
+
+        //Update config
         ConfigUpdate();
+
+        //Register commands
         this.getCommand("map").setExecutor(new MapCommand());
         this.getCommand("map").setTabCompleter(new TabComplete());
 //        this.getCommand("invisible").setExecutor(new MapCommand());
