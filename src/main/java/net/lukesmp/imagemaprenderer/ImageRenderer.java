@@ -9,32 +9,45 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
-import static java.lang.System.load;
+import java.net.URL;
 
 public class ImageRenderer extends MapRenderer {
     private BufferedImage image;
-    private boolean done;
-    public ImageRenderer(){
-        done=false;
-    }
+
+    public ImageRenderer() {}
 
     public ImageRenderer(String imagePath) {
-        try {
-            image = ImageIO.read(new File(imagePath));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        load(imagePath);
     }
 
     public boolean load(String imagePath) {
+        if (isValid(imagePath)) {
+            BufferedImage image = null;
+            try {
+                image = ImageIO.read(new URL(imagePath));
+            } catch (IOException e) {
+                return false;
+            }
+            this.image = image;
+            return true;
+        }
+        return false;
+    }
 
+    public static boolean isValid(String url) {
+        try {
+            new URL(url).toURI();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
         if (image != null) {
             mapCanvas.drawImage(0, 0, image);
+            mapView.setTrackingPosition(false);
         }
     }
 }

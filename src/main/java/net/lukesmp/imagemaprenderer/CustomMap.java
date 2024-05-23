@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class CustomMap {
-    String prefix = ImageMapRenderer.plugin.getConfig().getString("prefix");
     private final BufferedImage image;
     private int id;
 
@@ -31,23 +30,22 @@ public class CustomMap {
     }
 
     public void giveMap(Player player) {
-        ItemStack map = new ItemStack(Material.FILLED_MAP, 1);
-        MapMeta meta = (MapMeta) map.getItemMeta();
-        meta.setMapView(Bukkit.getMap(id));
-        map.setItemMeta(meta);
-        //configure map view
-        MapView view = Bukkit.createMap(player.getWorld());
-        view.getRenderers().clear();
-        view.addRenderer(new Render());
-        meta.setMapView(view);
-        map.setItemMeta(meta);
-
-        //check to see if player has inventory space
-        if (player.getInventory().firstEmpty() == -1) {
-            player.getWorld().dropItem(player.getLocation(), map);
-        } else {
-            player.getInventory().addItem(map);
+        //create mapView
+        MapView mapView = Bukkit.createMap(player.getWorld());
+        mapView.getRenderers().clear();
+        ImageRenderer renderer = new ImageRenderer();
+        if (renderer.load("file:///" + new File("plugins/ImageMapRenderer/images/" + id + ".png").getAbsolutePath())) {
+            mapView.addRenderer(renderer);
+            ItemStack map = new ItemStack(Material.FILLED_MAP, 1);
+            MapMeta meta = (MapMeta) map.getItemMeta();
+            meta.setMapView(mapView);
+            map.setItemMeta(meta);
+            //check to see if player has inventory space
+            if (player.getInventory().firstEmpty() == -1) {
+                player.getWorld().dropItem(player.getLocation(), map);
+            } else {
+                player.getInventory().addItem(map);
+            }
         }
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.GREEN + "Map Created!");
     }
 }

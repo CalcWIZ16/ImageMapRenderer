@@ -1,11 +1,14 @@
 package net.lukesmp.imagemaprenderer;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class CustomMapArray {
+
+    private final String prefix = ImageMapRenderer.plugin.getConfig().getString("prefix");
 
     private final int numMapsWidth;
     private final int numMapsHeight;
@@ -22,6 +25,7 @@ public class CustomMapArray {
      */
     public CustomMapArray(int numMapsWidth, int numMapsHeight, BufferedImage image) {
         this.image = image;
+
         if (numMapsWidth == -1 && numMapsHeight == -1) {
             this.numMapsWidth = 1;
             this.numMapsHeight = 1;
@@ -61,6 +65,7 @@ public class CustomMapArray {
         for (CustomMap map : maps) {
             map.giveMap(player);
         }
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix) + ChatColor.GREEN + "Map(s) Created!");
     }
 
     public int getNumMapsWidth() {
