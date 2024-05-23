@@ -49,11 +49,11 @@ public final class ImageMapRenderer extends JavaPlugin implements Listener {
         File oldConfigFile = new File(getDataFolder(), "config.yml");
         FileConfiguration oldConfigFileConfiguration = YamlConfiguration.loadConfiguration(oldConfigFile);
 
-        if (oldConfigFileConfiguration.getInt("configVersion") < configVersion) {
-            if (oldConfigFileConfiguration.getInt("configVersion") <= 4) {
-                imageUpdate();
-            }
+        if (oldConfigFileConfiguration.getInt("configVersion") <= 4) {
+            imageUpdate();
+        }
 
+        if (oldConfigFileConfiguration.getInt("configVersion") < configVersion) {
             File oldConfigFileRenamed = new File(getDataFolder(), "config.yml.old");
             if (!oldConfigFile.renameTo(oldConfigFileRenamed)) {
                 Bukkit.getConsoleSender().sendMessage("ImageMapRenderer: Could not rename old config file");
@@ -94,65 +94,65 @@ public final class ImageMapRenderer extends JavaPlugin implements Listener {
 
         if (dataFile.exists()) {
             Bukkit.getConsoleSender().sendMessage("ImageMapRenderer: Updating image files");
-            FileConfiguration dataFileConfiguration = YamlConfiguration.loadConfiguration(dataFile);
-            //takes images references in data.yml and stored in the config directory and move the images to the images folder with the map id as the name
-            for (String key : dataFileConfiguration.getKeys(false)) {
-                String imagePath = dataFileConfiguration.getString(key);
-                File imageFile = new File(getDataFolder(), imagePath);
+            CustomFile dataFileConfiguration = new CustomFile("data.yml");
+            for (String key : dataFileConfiguration.getConfig().getKeys(true)) {
+                String imagePath = dataFileConfiguration.getConfig().getString(key);
+                key = key.replace("ids.", "");
+                File imageFile = new File(imagePath.replace("file://", ""));
                 if (imageFile.exists()) {
-                    File newImageFile = new File(getDataFolder(), "images/" + key + ".png");
                     try {
-                        imageFile.renameTo(newImageFile);
+                        imageFile.renameTo(new File(getDataFolder(), "images/" + key + ".png"));
                     } catch (Exception e) {
                         Bukkit.getConsoleSender().sendMessage("An error occured when trying to update the image files");
                     }
                 }
             }
+            dataFile.delete();
+        }
+    }
+
+    private class CustomFile {
+        private final ImageMapRenderer plugin = ImageMapRenderer.getPlugin(ImageMapRenderer.class);
+        private FileConfiguration dataConfig = null;
+        private File dataConfigFile = null;
+        private final String name;
+        public CustomFile(String name) {
+            this.name = name;
+            saveDefaultConfig();
+        }
+        public void reloadConfig() {
+            if (dataConfigFile == null)
+                dataConfigFile = new File(plugin.getDataFolder(),name);
+            this.dataConfig = YamlConfiguration
+                    .loadConfiguration(dataConfigFile);
+            InputStream defConfigStream = plugin.getResource(name);
+            if (defConfigStream != null) {
+                YamlConfiguration defConfig = YamlConfiguration
+                        .loadConfiguration(new InputStreamReader(defConfigStream));
+                this.dataConfig.setDefaults(defConfig);
+            }
+        }
+        public FileConfiguration getConfig() {
+            if (this.dataConfig == null)
+                reloadConfig();
+            return this.dataConfig;
+        }
+        public void saveConfig() {
+            if ((dataConfig == null) || (dataConfigFile == null))
+                return;
+            try {
+                getConfig().save(dataConfigFile);
+            } catch (IOException e) {
+                plugin.getLogger().log(Level.SEVERE, "Could not save config to "
+                        + dataConfigFile, e);
+            }
+        }
+        public void saveDefaultConfig() {
+            if (dataConfigFile == null)
+                dataConfigFile = new File(plugin.getDataFolder(), name);
+            if (!dataConfigFile.exists())
+                plugin.saveResource(name, false);
         }
 
-        class CustomFile {
-            private final ImageMapRenderer plugin = ImageMapRenderer.getPlugin(ImageMapRenderer.class);
-            private FileConfiguration dataConfig = null;
-            private File dataConfigFile = null;
-            private final String name;
-            public CustomFile(String name) {
-                this.name = name;
-                saveDefaultConfig();
-            }
-            public void reloadConfig() {
-                if (dataConfigFile == null)
-                    dataConfigFile = new File(plugin.getDataFolder(),name);
-                this.dataConfig = YamlConfiguration
-                        .loadConfiguration(dataConfigFile);
-                InputStream defConfigStream = plugin.getResource(name);
-                if (defConfigStream != null) {
-                    YamlConfiguration defConfig = YamlConfiguration
-                            .loadConfiguration(new InputStreamReader(defConfigStream));
-                    this.dataConfig.setDefaults(defConfig);
-                }
-            }
-            public FileConfiguration getConfig() {
-                if (this.dataConfig == null)
-                    reloadConfig();
-                return this.dataConfig;
-            }
-            public void saveConfig() {
-                if ((dataConfig == null) || (dataConfigFile == null))
-                    return;
-                try {
-                    getConfig().save(dataConfigFile);
-                } catch (IOException e) {
-                    plugin.getLogger().log(Level.SEVERE, "Could not save config to "
-                            + dataConfigFile, e);
-                }
-            }
-            public void saveDefaultConfig() {
-                if (dataConfigFile == null)
-                    dataConfigFile = new File(plugin.getDataFolder(), name);
-                if (!dataConfigFile.exists())
-                    plugin.saveResource(name, false);
-            }
-
-        }
     }
 }
