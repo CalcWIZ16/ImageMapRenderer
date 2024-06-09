@@ -110,7 +110,7 @@ public final class ImageMapRenderer extends JavaPlugin implements Listener {
                 }
                 idCount++;
             }
-            if (idCount == imageFolder.listFiles().length) {
+            if (idCount-1 == imageFolder.listFiles().length) {
                 Bukkit.getConsoleSender().sendMessage("ImageMapRenderer: Image files updated successfully");
                 dataFile.delete();
             } else {
