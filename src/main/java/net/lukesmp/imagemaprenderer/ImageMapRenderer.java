@@ -95,6 +95,7 @@ public final class ImageMapRenderer extends JavaPlugin implements Listener {
         if (dataFile.exists()) {
             Bukkit.getConsoleSender().sendMessage("ImageMapRenderer: Updating image files");
             CustomFile dataFileConfiguration = new CustomFile("data.yml");
+            int idCount = 0;
 
             for (String key : dataFileConfiguration.getConfig().getKeys(true)) {
                 String imagePath = dataFileConfiguration.getConfig().getString(key);
@@ -107,8 +108,14 @@ public final class ImageMapRenderer extends JavaPlugin implements Listener {
                         Bukkit.getConsoleSender().sendMessage("An error occured when trying to update the image files");
                     }
                 }
+                idCount++;
             }
-            dataFile.delete();
+            if (idCount == imageFolder.listFiles().length) {
+                Bukkit.getConsoleSender().sendMessage("ImageMapRenderer: Image files updated successfully");
+                dataFile.delete();
+            } else {
+                Bukkit.getConsoleSender().sendMessage("ImageMapRenderer: An error occured when trying to update the image files");
+            }
         }
     }
 
