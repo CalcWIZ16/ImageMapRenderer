@@ -45,7 +45,7 @@ public final class ImageMapRenderer extends JavaPlugin implements Listener {
 
     private void ConfigUpdate() {
         //Load old config
-        int configVersion = 4;
+        int configVersion = 5;
         File oldConfigFile = new File(getDataFolder(), "config.yml");
         FileConfiguration oldConfigFileConfiguration = YamlConfiguration.loadConfiguration(oldConfigFile);
 
@@ -86,15 +86,16 @@ public final class ImageMapRenderer extends JavaPlugin implements Listener {
     //upgrade images data from data.yml to images folder
     private void imageUpdate() {
         File dataFile = new File(getDataFolder(), "data.yml");
-        File imagesFolder = new File(getDataFolder(), "images");
+        File imageFolder = new File("plugins/ImageMapRenderer/images");
 
-        if (!imagesFolder.exists()) {
-            imagesFolder.mkdirs();
+        if (!imageFolder.exists()) {
+            Bukkit.getConsoleSender().sendMessage(imageFolder.mkdirs() ? "ImageMapRenderer: Created images folder" : "ImageMapRenderer: Could not create images folder");
         }
 
         if (dataFile.exists()) {
             Bukkit.getConsoleSender().sendMessage("ImageMapRenderer: Updating image files");
             CustomFile dataFileConfiguration = new CustomFile("data.yml");
+
             for (String key : dataFileConfiguration.getConfig().getKeys(true)) {
                 String imagePath = dataFileConfiguration.getConfig().getString(key);
                 key = key.replace("ids.", "");

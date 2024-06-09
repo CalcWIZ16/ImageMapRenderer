@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class ImageManager implements Listener {
@@ -49,8 +50,12 @@ public class ImageManager implements Listener {
 
     private void loadImages() {
         File imageFolder = new File("plugins/ImageMapRenderer/images");
-        for (String fileName : imageFolder.list()) {
-            managedMapIds.add(Integer.parseInt(fileName.replace(".png", "")));
+        if (imageFolder.exists() && imageFolder.isDirectory()) {
+            for (String fileName : Objects.requireNonNull(imageFolder.list())) {
+                managedMapIds.add(Integer.parseInt(fileName.replace(".png", "")));
+            }
+        } else {
+            Bukkit.getConsoleSender().sendMessage("ImageMapRenderer: Could not find images folder");
         }
     }
 
